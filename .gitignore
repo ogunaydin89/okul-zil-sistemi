@@ -1,0 +1,23 @@
+# Python cache & environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+.venv/
+venv/
+
+# Runtime state: changes every bell, rebuilt automatically
+data/ring-log.jsonl
+data/fired-today.json
+
+# Bundled dependencies: reinstall with requirements.txt
+lib/
+
+# Sound files: not part of the code, add your own (see README)
+audio/
+
+# OS & Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
