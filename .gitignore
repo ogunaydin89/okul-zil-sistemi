@@ -6,6 +6,10 @@ __pycache__/
 .venv/
 venv/
 
+# Environment variables & secrets
+.env
+*.env
+
 # Runtime state: changes every bell, rebuilt automatically
 data/ring-log.jsonl
 data/fired-today.json
@@ -18,6 +22,7 @@ audio/
 
 # OS & Editor
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
 *.swp

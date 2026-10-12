@@ -27,7 +27,7 @@ durdur**, zil sistemini aç/kapat, yapılandırmayı yeniden yükle, çıkış.
 ## Klasör yapısı
 
 ```
-okul-zil-sistemi/
+Zil/
   zil.pyw          giriş noktası (pythonw = konsol penceresi yok)
   autostart.py     başlangıç / masaüstü kısayolu yönetimi
   core/            motor
@@ -148,3 +148,22 @@ MEB çalışma takvimi ve resmî tatiller **Özel Günler** sekmesinde hazır:
 | Panel açılmıyor | Tepsi simgesi duruyor mu? Port 8765 meşgulse 8766+ denenir |
 | Ne zaman çaldığını görmek | **Kayıt** sekmesi (`data/ring-log.jsonl`) |
 | Ses aygıtı hatası | Panelde kırmızı uyarı şeridi çıkar |
+
+
+---
+
+## İşletme notları (Ogün'ün kararları ve 21.09.2026 denetiminin bulguları)
+
+Bu bölüm, önceden yalnızca Claude'un hafızasında duran bilgileri herkesin okuyabileceği yere taşır.
+
+- **Bu sistem gerçek okul zillerini çalar.** Yanlış saatte, iki kez veya hiç çalmayan zilin fiziksel sonuçları vardır; **acil durum sirenleri (yangın tahliyesi, sivil savunma) ders zili tarafından asla kesilmemeli.** Ses önceliği: acil durum > tören > zil.
+- Başlatmadan veya yeniden başlatmadan önce `data/settings.json` içindeki `enabled` değerine bak. Okul saatinde test etme: gerçekten çalar.
+- **Güvenlik açısından kritik parçalar:** `data/fired-today.json` (çift zil koruması), ses öncelik sırası, `catchup_seconds` penceresi. Bunlara dokunursan zamanlayıcı testlerini yeniden çalıştır.
+- **Asıl zayıf nokta kod değil, bilgisayarın açık olması:** PC ~08:20'de açılıyor (ilk zil 08:25); Windows Update yeniden başlatması ve ani elektrik kesintileri zilleri kaçırdı (16.09 17:00, 18.09 12:45–13:30). Kaçırılan zil sessizce işaretlenir, günlüğe yazılmaz. **21.09.2026'da Ogün** Windows Update etkin saatlerini 08:00–20:00 yaptı, "Get me up to date"i kapattı, güncelleme sonrası otomatik oturum açmayı (ARSO) açtı; ayrıca grup ilkeleri uygulandı (AUOptions=4, Salı 03:00; NoAutoRebootWithLoggedOnUsers=1). Güncellemeler birikince 17:00'den sonra elle yeniden başlatıyor.
+- **Oran duygusu (Ogün'ün kararı):** bazı günlerde 1–2 zilin kaçması kabul edilebilir. BIOS AC-recovery, otomatik oturum açma, UPS ve Wake-on-LAN önerilerini reddetti; günlük boşlukları, DNS-rebinding sertleştirmesini, haftalık marşın otomasyonunu da önemsiz buluyor. **Bunları yeniden gündeme getirme.** Kodun doğruluğu (çift zil, sirenin kesilmesi) yine önemlidir.
+- **Cumartesi:** DYK (Pzt–Çar 8.–9. ders ve Cumartesi dersleri) 21.09.2026'da başladı; bilgisayar Cumartesi günleri de açık olmalı.
+- **Zil sesleri (21.09.2026'dan beri):** `audio/bells` içinde `Ogrenci_Zili.wav`, `Ogretmen_Zili.wav`, `Cikis_Zili.wav` (Ogün'ün kendi kayıtları, olabildiğince yüksek; Windows ana ses %100). Çalan dosya kilitlidir: dosyayı yerinde değiştirirken Zil boşta olmalı.
+- **Haftalık İstiklal Marşı** (Pzt ~08:22, Cuma ~15:23) elle çalınır; `ceremonies` boştur. Eylül 2027'den sonrası bilerek boş bırakıldı.
+- **Port 8765:** kontrol paneli `127.0.0.1:8765` dinler. Windows ikinci bir sunucunun aynı porta hata vermeden bağlanmasına izin verir; **test sunucusu için başka bir port kullan** (8792 boştu) ve önce `Get-NetTCPConnection -LocalPort <port> -State Listen` ile bak.
+- **Panonun zil saatleri bir kopyadır;** kaynak `data/schedule.json` (her ders için `student`/`teacher`/`exit` satırları). Panoyu güncellerken buradan kopyala, asla hesaplama. **Teneffüsler eşit değildir:** 2. dersten sonra 20 dk (ara öğün, bilerek), diğerleri 15 dk, öğle arası 50 dk. Pano her yerde **öğretmen zilini** kullanır.
+- **Neden exe yok:** Smart App Control açık; imzasız yeni `.exe` engellenir. Her şey Python (`pythonw`) üzerinde çalışır.
