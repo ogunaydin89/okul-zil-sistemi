@@ -34,15 +34,16 @@ def _single_instance():
 
 def main():
     if _single_instance() is None:
-        try:
-            import ctypes
-            ctypes.windll.user32.MessageBoxW(
-                None, "Zil is already running. Look for the bell icon in the "
-                      "system tray (bottom-right, next to the clock).",
-                "Zil", 0x40)
-        except Exception:
-            pass
-        return 1
+        if "--browser" in sys.argv or "--panel" in sys.argv:
+            import webbrowser
+            from core import store, window
+            port = int(store.load_settings().get("ui_port", 8765))
+            u = f"http://127.0.0.1:{port}/"
+            if "--browser" in sys.argv:
+                webbrowser.open(u)
+            elif not window.show(u):
+                webbrowser.open(u)
+        return 0
 
     from core import app
     return app.main(show_panel="--panel" in sys.argv,

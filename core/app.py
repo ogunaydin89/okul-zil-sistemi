@@ -1,10 +1,10 @@
 """Wires the engine, scheduler, server, native window and tray together.
 
-Thread layout on Windows matters here:
-  * main thread    - the WebView2 window loop (pywebview insists on this)
-  * tray thread    - pystray's own message loop
+Thread layout:
+  * main thread    - pystray's system-tray message loop
   * scheduler      - one-second wall-clock tick
   * http thread(s) - the loopback control-panel server
+  * app window     - chromeless Microsoft Edge --app window via window.py
 """
 import threading
 import webbrowser
@@ -74,9 +74,10 @@ def _refresh_tray():
 
 
 def open_panel(*_a):
-    if _use_window and window.show():
+    target_url = server.url(_port)
+    if _use_window and window.show(target_url):
         return
-    webbrowser.open(server.url(_port))
+    webbrowser.open(target_url)
 
 
 def _toggle_enabled(*_a):
@@ -147,18 +148,11 @@ def main(show_panel=False, force_browser=False):
     _icon = build_tray()
     _refresh_tray()
 
-    if _use_window:
-        # Window owns the main thread; the tray gets its own.
-        server.Api.in_app = True
-        window.create(server.url(_port),
-                      (_state["settings"].get("school_name") or "Zil"),
-                      start_hidden=not show_panel)
-        threading.Thread(target=_icon.run, daemon=True, name="zil-tray").start()
-        window.start()                            # blocks until _quit()
-    else:
-        if show_panel:
-            open_panel()
-        _icon.run()                               # blocks until _quit()
+    if show_panel:
+        t = threading.Timer(0.2, open_panel)
+        t.daemon = True
+        t.start()
+    _icon.run()                                   # blocks until _quit()
 
     store.log_event("system", "stop", "stop", "exited")
     return 0

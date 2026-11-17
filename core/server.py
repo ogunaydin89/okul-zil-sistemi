@@ -161,7 +161,8 @@ class Handler(BaseHTTPRequestHandler):
         except OSError:
             return self._send(500, "ui/index.html missing", "text/plain; charset=utf-8")
         html = html.replace("__ZIL_TOKEN__", TOKEN)
-        html = html.replace("__ZIL_IN_APP__", "true" if Api.in_app else "false")
+        in_app = Api.in_app or ("app=1" in self.path)
+        html = html.replace("__ZIL_IN_APP__", "true" if in_app else "false")
         return self._send(200, html, "text/html; charset=utf-8")
 
     def _serve_static(self, path):
@@ -190,4 +191,4 @@ def start(port):
 
 
 def url(port):
-    return "http://127.0.0.1:%d/?t=%s" % (port, TOKEN)
+    return "http://127.0.0.1:%d/" % port

@@ -36,13 +36,13 @@ Zil/
     scheduler.py   duvar saati zamanlayıcı
     server.py      127.0.0.1 kontrol paneli sunucusu
     app.py         pencere + tepsi + bağlantılar
-    window.py      yerel uygulama penceresi (WebView2)
+    window.py      yerel uygulama penceresi (Edge --app / WebView)
     migrate.py     eski config.js → JSON dönüştürücü
   ui/              kontrol paneli (HTML/CSS/JS)
   audio/           bells/ anthems/ sirens/
   data/            settings.json, schedule.json, ring-log.jsonl,
                    fired-today.json (bugün çalan ziller)
-  lib/             gömülü bağımlılıklar (pygame, pystray, Pillow, pywebview)
+  lib/             gömülü bağımlılıklar (pygame, pystray, Pillow)
 ```
 
 Tüm yapılandırma `data/` içindedir. Klasörü kopyalarsanız sistem taşınır —
